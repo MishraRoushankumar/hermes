@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: hermes
+          POSTGRES_PASSWORD: hermes
+          POSTGRES_DB: hermes
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://hermes:hermes@localhost:5432/hermes
+      BETTER_AUTH_SECRET: ci-test-secret-that-is-at-least-32-characters
+      GITHUB_CLIENT_ID: ci-placeholder
+      GITHUB_CLIENT_SECRET: ci-placeholder
+      GOOGLE_CLIENT_ID: ci-placeholder
+      GOOGLE_CLIENT_SECRET: ci-placeholder
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run migrations
+        run: npx prisma migrate deploy
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
