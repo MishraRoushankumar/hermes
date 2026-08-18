@@ -27,6 +27,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://hermes:hermes@localhost:5432/hermes
+      BETTER_AUTH_SECRET: ci-test-secret-that-is-at-least-32-characters
       GITHUB_CLIENT_ID: ci-placeholder
       GITHUB_CLIENT_SECRET: ci-placeholder
       GOOGLE_CLIENT_ID: ci-placeholder
