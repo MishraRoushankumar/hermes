@@ -29,7 +29,6 @@ interface UserData {
 
 interface UserButtonProps {
   user: UserData | null;
-  onLogout?: () => void | Promise<void>;
   onSettings?: () => void;
   onProfile?: () => void;
   onBilling?: () => void;
@@ -43,7 +42,6 @@ interface UserButtonProps {
 
 export default function UserButton({
   user,
-  onLogout,
   onSettings,
   onProfile,
   onBilling,
@@ -147,40 +145,40 @@ export default function UserButton({
       <DropdownMenuContent className="w-64" align="end">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center space-x-3">
-              <Avatar className="h-12 w-12">
-                <AvatarImage
-                  src={user.image || ""}
-                  alt={user.name || "User avatar"}
-                />
-                <AvatarFallback className="bg-primary text-primary-foreground font-medium text-lg">
-                  {getUserInitials(user.name, user.email)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  {user.name || "User"}
-                </p>
-                {showEmail && user.email && (
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user.email}
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-3">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage
+                    src={user.image || ""}
+                    alt={user.name || "User avatar"}
+                  />
+                  <AvatarFallback className="bg-primary text-primary-foreground font-medium text-lg">
+                    {getUserInitials(user.name, user.email)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    {user.name || "User"}
                   </p>
-                )}
-                {showBadge && (
-                  <Badge variant={badgeVariant} className="w-fit">
-                    {badgeText}
-                  </Badge>
-                )}
+                  {showEmail && user.email && (
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.email}
+                    </p>
+                  )}
+                  {showBadge && (
+                    <Badge variant={badgeVariant} className="w-fit">
+                      {badgeText}
+                    </Badge>
+                  )}
+                </div>
               </div>
+              {showMemberSince && (
+                <p className="text-xs text-muted-foreground">
+                  Member since {formatMemberSince(user.createdAt)}
+                </p>
+              )}
             </div>
-            {showMemberSince && (
-              <p className="text-xs text-muted-foreground">
-                Member since {formatMemberSince(user.createdAt)}
-              </p>
-            )}
-          </div>
-        </DropdownMenuLabel>
+          </DropdownMenuLabel>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
