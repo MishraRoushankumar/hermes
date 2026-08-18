@@ -51,10 +51,11 @@ function Carousel({
   children,
   ...props
 }: React.ComponentProps<"div"> & CarouselProps) {
+  const axis = orientation === "horizontal" ? "x" : "y"
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
-      axis: orientation === "horizontal" ? "x" : "y",
+      axis,
     },
     plugins,
   );
@@ -77,16 +78,25 @@ function Carousel({
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      const target = event.target as HTMLElement
+      const isEditable =
+        target.isContentEditable ||
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT"
+
+      if (isEditable) return
+
       if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        scrollPrev();
+        event.preventDefault()
+        scrollPrev()
       } else if (event.key === "ArrowRight") {
-        event.preventDefault();
-        scrollNext();
+        event.preventDefault()
+        scrollNext()
       }
     },
     [scrollPrev, scrollNext],
-  );
+  )
 
   React.useEffect(() => {
     if (!api || !setApi) return;
@@ -115,8 +125,7 @@ function Carousel({
         carouselRef,
         api: api,
         opts,
-        orientation:
-          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        orientation,
         scrollPrev,
         scrollNext,
         canScrollPrev,

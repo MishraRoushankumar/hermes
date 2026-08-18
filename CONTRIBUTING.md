@@ -31,7 +31,7 @@ Feature development should not be pushed directly to `main`.
 develop is the integration branch for completed development work and the
 source branch for upcoming releases.
 
-### `feature/\*`
+### `feature/*`
 
 Feature branches are used for individual features, fixes, refactors, and other
 development work.
@@ -230,7 +230,7 @@ primarily improve the codebase without introducing a new user-facing feature.
 Feature branches should target:
 
 ```text
-feature/\* → develop
+feature/* → develop
 ```
 
 Release pull requests should target:

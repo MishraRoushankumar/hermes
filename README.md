@@ -242,6 +242,7 @@ Configure the required variables before starting the application.
 | ---------------------- | ----------------------------------------------- |
 | `DATABASE_URL`         | PostgreSQL connection string                    |
 | `POSTGRES_PASSWORD`    | Password used by the local PostgreSQL container |
+| `BETTER_AUTH_SECRET`   | Secret string (min 32 chars) for Better Auth    |
 | `GITHUB_CLIENT_ID`     | GitHub OAuth client ID                          |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret                      |
 | `GOOGLE_CLIENT_ID`     | Google OAuth client ID                          |
@@ -464,12 +465,3 @@ implemented.
 
 Hermes is distributed under the license specified in
 [LICENSE](./LICENSE).
-
----
-
-## Project Status
-
-Hermes is a work in progress.
-
-The roadmap describes planned functionality and should not be interpreted as a
-list of currently available features.

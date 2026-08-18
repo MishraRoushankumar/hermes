@@ -26,8 +26,9 @@ active development branch.
 
 Please **do not report security vulnerabilities through public GitHub issues**.
 
-If you discover a security vulnerability, report it privately through the
-repository's available private security reporting mechanism.
+If you discover a security vulnerability, report it privately through
+[GitHub Security Advisories](https://github.com/rkm/hermes/security/advisories/new)
+(Private Vulnerability Reporting), which is enabled for this repository.
 
 A useful report should include:
 

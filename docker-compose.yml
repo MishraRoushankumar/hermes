@@ -1,7 +1,7 @@
 name: hermes
 services:
   db:
-    image: postgres:latest
+    image: postgres:16
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}

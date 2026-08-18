@@ -10,15 +10,40 @@ function Slider({
   max = 100,
   ...props
 }: SliderPrimitive.Root.Props) {
+  const resolvedClassName =
+    typeof className === "function"
+      ? className({
+          disabled: props.disabled ?? false,
+          orientation: props.orientation ?? "horizontal",
+          activeThumbIndex: 0,
+          dragging: false,
+          max,
+          min,
+          step: props.step ?? 1,
+          value: value ?? defaultValue ?? [min],
+          values: Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [value ?? defaultValue ?? min],
+          thumbAlignment: "edge",
+          rtl: false,
+          marks: undefined,
+          onValueChange: undefined,
+          onChange: undefined,
+          children: undefined,
+        } as unknown as import("@base-ui/react/slider").SliderRootState)
+      : className
+
   const _values = Array.isArray(value)
     ? value
     : Array.isArray(defaultValue)
       ? defaultValue
-      : [min, max]
+      : typeof value === "number"
+        ? [value]
+        : typeof defaultValue === "number"
+          ? [defaultValue]
+          : [min]
 
   return (
     <SliderPrimitive.Root
-      className={cn("data-horizontal:w-full data-vertical:h-full", className)}
+      className={cn("data-horizontal:w-full data-vertical:h-full", resolvedClassName)}
       data-slot="slider"
       defaultValue={defaultValue}
       value={value}
@@ -41,6 +66,7 @@ function Slider({
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             key={index}
+            index={index}
             className="relative block size-3 shrink-0 rounded-full border border-ring bg-white ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
           />
         ))}

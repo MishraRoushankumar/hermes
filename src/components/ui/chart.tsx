@@ -90,6 +90,31 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  const isValidCustomProperty = (key: string) => {
+    return /^[a-zA-Z][a-zA-Z0-9-]*$/.test(key)
+  }
+
+  const isValidColor = (color: string) => {
+    try {
+      const testEl = document.createElement("div")
+      testEl.style.color = color
+      return testEl.style.color !== ""
+    } catch {
+      return false
+    }
+  }
+
+  const validColorConfig = colorConfig.filter(([key, itemConfig]) => {
+    const color =
+      itemConfig.theme?.[Object.keys(THEMES)[0] as keyof typeof itemConfig.theme] ??
+      itemConfig.color
+    return isValidCustomProperty(key) && color && isValidColor(color)
+  })
+
+  if (!validColorConfig.length) {
+    return null
+  }
+
   return (
     <style
       dangerouslySetInnerHTML={{
@@ -97,7 +122,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
           .map(
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
-${colorConfig
+${validColorConfig
   .map(([key, itemConfig]) => {
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
