@@ -22,7 +22,6 @@ const Header = ({ user }: Props) => {
       <div className="col-span-1 flex items-center justify-between space-x-2">
         <div
           className="border-animation relative p-px rounded flex-1 self-stretch overflow-hidden flex items-center justify-center"
-          aria-hidden="true"
         >
           <SearchBar />
         </div>

@@ -1,6 +1,6 @@
 "use client";
 import { Search } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -12,6 +12,7 @@ import {
 
 const SearchBar = () => {
   const [open, setOpen] = useState(false);
+  const isMac = typeof navigator !== "undefined" && navigator.platform.toUpperCase().indexOf("MAC") >= 0;
 
   // Handle keyboard shortcut
   useEffect(() => {
@@ -26,6 +27,8 @@ const SearchBar = () => {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
+  const modifierKey = isMac ? "⌘" : "Ctrl";
+
   return (
     <>
       {/* Search Button */}
@@ -38,7 +41,7 @@ const SearchBar = () => {
           <span className="text-xs text-left">Search</span>
         </span>
         <span className="flex space-x-1">
-          <kbd className="px-1 py-0.5 text-xs bg-zinc-700 rounded">Ctrl</kbd>
+          <kbd className="px-1 py-0.5 text-xs bg-zinc-700 rounded">{modifierKey}</kbd>
           <kbd className="px-1 py-0.5 text-xs bg-zinc-700 rounded">K</kbd>
         </span>
       </button>
