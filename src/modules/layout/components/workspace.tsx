@@ -2,24 +2,86 @@
 
 import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/ui/hint";
-import { Select } from "@/components/ui/select";
-import { User } from "lucide-react";
+import { Loader, Plus, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const Workspace = () => {
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { useWorkspaces } from "@/modules/workspaces/hooks/workspace";
+import { useWorkspaceStore } from "../store";
+import CreateWorkspace from "./create-workspace";
+
+const WorkSpace = () => {
+  const { data: workspaces, isLoading } = useWorkspaces();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { selectedWorkspace, setSelectedWorkspace } = useWorkspaceStore();
+
+  useEffect(() => {
+    if (workspaces && workspaces.length > 0 && !selectedWorkspace) {
+      setSelectedWorkspace(workspaces[0]);
+    }
+  }, [workspaces, selectedWorkspace, setSelectedWorkspace]);
+
+  if (isLoading) {
+    return <Loader className="animate-spin size-4 text-indigo-400" />;
+  }
+
+  if (!workspaces || workspaces.length === 0) {
+    return <div>No workspace found</div>;
+  }
+
+  const value = selectedWorkspace?.id ?? workspaces[0].id;
+  const displayName = selectedWorkspace?.name ?? workspaces[0].name;
+
   return (
     <>
-      <Hint label="Change workspace">
-        <Select>
-          <Button className="border border-indigo-400 bg-indigo-400/10 hover:bg-indigo-400/20 text-indigo-400 hover:text-indigo-300 flex flex-row items-center space-x-1">
+      <Select
+        value={value}
+        onValueChange={(id) => {
+          const ws = workspaces.find((w) => w.id === id);
+          if (ws) setSelectedWorkspace(ws);
+        }}
+      >
+        <Hint label="Change Workspace">
+          <SelectTrigger className="border border-indigo-400 bg-indigo-400/10 hover:bg-indigo-400/20 text-indigo-400 hover:text-indigo-300 flex flex-row items-center space-x-1">
             <User className="size-4 text-indigo-400" />
-            <span className="text-indigo-400 text-sm font-semibold">
-              Personal Workspace
+            <span className="text-sm text-indigo-400 font-semibold">{displayName}</span>
+          </SelectTrigger>
+        </Hint>
+        <SelectContent>
+          {workspaces.map((ws) => (
+            <SelectItem key={ws.id} value={ws.id}>
+              {ws.name}
+            </SelectItem>
+          ))}
+          <Separator className="my-1" />
+          <div className="p-2 flex flex-row justify-between items-center">
+            <span className="text-sm font-semibold text-zinc-600">
+              My Workspaces
             </span>
-          </Button>
-        </Select>
-      </Hint>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <Plus size={16} className="text-indigo-400" />
+            </Button>
+          </div>
+        </SelectContent>
+      </Select>
+
+      <CreateWorkspace
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
     </>
   );
 };
 
-export default Workspace;
+export default WorkSpace;
