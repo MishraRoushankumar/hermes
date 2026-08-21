@@ -5,11 +5,22 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  const workspace = await initializeWorkspace();
+  const workspaceResult = await initializeWorkspace();
   const user = await currentUser();
 
   if (!user) {
     redirect("/sign-in");
+  }
+
+  if (!workspaceResult.success) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Workspace Initialization Failed</h1>
+          <p className="text-zinc-400">{workspaceResult.error || "Unknown error"}</p>
+        </div>
+      </div>
+    );
   }
 
   return (

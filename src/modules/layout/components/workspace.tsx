@@ -69,6 +69,7 @@ const WorkSpace = () => {
               size="icon"
               variant="outline"
               onClick={() => setIsModalOpen(true)}
+              aria-label="Create workspace"
             >
               <Plus size={16} className="text-indigo-400" />
             </Button>

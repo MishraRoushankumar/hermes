@@ -3,7 +3,7 @@ import React from "react";
 
 const LoadingPage = () => {
   return (
-    <div className="flex flex-col justify-center items-center ">
+    <div className="flex min-h-screen flex-col justify-center items-center">
       <Loader2 className="animate-spin text-indigo-400" />
     </div>
   );

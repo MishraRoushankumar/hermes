@@ -17,6 +17,7 @@ const CreateWorkspace = ({
   const { mutateAsync, isPending } = useCreateWorkspace();
 
   const handleSubmit = async () => {
+    if (isPending) return;
     if (!name.trim()) return;
     try {
       await mutateAsync(name);
@@ -38,6 +39,7 @@ const CreateWorkspace = ({
       onSubmit={handleSubmit}
       submitText={isPending ? "Creating..." : "Create Workspace"}
       submitVariant="default"
+      submitDisabled={isPending}
     >
       <div className="space-y-4">
         <Input

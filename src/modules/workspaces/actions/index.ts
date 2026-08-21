@@ -90,9 +90,16 @@ export async function createWorkspace(name: string) {
 }
 
 export const getWorkspaceById = async (id: string) => {
-  const workspace = await db.workspace.findUnique({
+  const user = await currentUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const workspace = await db.workspace.findFirst({
     where: {
       id: id,
+      OR: [{ ownerId: user.id }, { members: { some: { UserId: user.id } } }],
     },
     include: {
       members: true,

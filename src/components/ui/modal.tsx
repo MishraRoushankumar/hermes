@@ -26,6 +26,7 @@ interface ModalProps {
     | "secondary"
     | "ghost"
     | "link";
+  submitDisabled?: boolean;
   size?: string;
   className?: string;
 }
@@ -41,6 +42,7 @@ const Modal: React.FC<ModalProps> = ({
   cancelText = "Cancel",
   showFooter = true,
   submitVariant = "default",
+  submitDisabled = false,
   size,
   className = "",
 }) => {
@@ -66,10 +68,7 @@ const Modal: React.FC<ModalProps> = ({
               {cancelText}
             </Button>
             {onSubmit && (
-              <Button
-                className="bg-indigo-400 hover:bg-indigo-500 text-white"
-                onClick={handleSubmit}
-              >
+              <Button variant={submitVariant} onClick={handleSubmit} disabled={submitDisabled}>
                 {submitText}
               </Button>
             )}
