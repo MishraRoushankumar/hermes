@@ -3,8 +3,6 @@
 import { Unplug } from "lucide-react";
 import SearchBar from "./search-bar";
 import UserButton from "@/modules/authentication/components/user-button";
-
-import InviteMember from "./invite-member";
 import WorkSpace from "./workspace";
 import { UserProps } from "../types";
 
@@ -28,7 +26,6 @@ const Header = ({ user }: Props) => {
       </div>
 
       <div className="col-span-2 flex items-center justify-end space-x-2 hover:cursor-pointer hover:opacity-80">
-        <InviteMember />
         <WorkSpace />
         <UserButton user={user} size="sm" />
       </div>

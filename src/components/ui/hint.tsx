@@ -1,20 +1,31 @@
-import React from "react";
+"use client";
 
+import { cloneElement, isValidElement, forwardRef } from "react";
 import {
   Tooltip,
+  TooltipTrigger,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui/tooltip";
 
 export interface HintProps {
   label: string;
-  children: React.ReactNode;
+  children: React.ReactElement;
   side?: "top" | "bottom" | "left" | "right";
   align?: "start" | "center" | "end";
   sideOffset?: number;
   alignOffset?: number;
 }
+
+const HintTrigger = forwardRef<HTMLElement, React.ComponentProps<"div">>((props, ref) => {
+  const { children, ...rest } = props;
+  if (!isValidElement(children)) return null;
+  return cloneElement(children, {
+    ...rest,
+    ref,
+  } as Record<string, unknown>);
+});
+HintTrigger.displayName = "HintTrigger";
 
 export const Hint = ({
   label,
@@ -24,14 +35,12 @@ export const Hint = ({
   sideOffset,
   alignOffset,
 }: HintProps) => {
-  const isValidElement = React.isValidElement(children);
-
   return (
     <TooltipProvider delay={100}>
       <Tooltip>
-        <TooltipTrigger render={isValidElement ? children : undefined}>
-          {children}
-        </TooltipTrigger>
+        <TooltipTrigger asChild>
+  <HintTrigger>{children}</HintTrigger>
+</TooltipTrigger>
 
         <TooltipContent
           side={side}
