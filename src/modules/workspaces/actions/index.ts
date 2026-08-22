@@ -29,8 +29,10 @@ export const initializeWorkspace = async () => {
         ownerId: user.id,
         members: {
           create: {
-            UserId: user.id,
             role: MEMBER_ROLE.ADMIN,
+            user: {
+              connect: { id: user.id },
+            },
           },
         },
       },
@@ -60,7 +62,7 @@ export async function getWorkspaces() {
 
   const workspaces = await db.workspace.findMany({
     where: {
-      OR: [{ ownerId: user.id }, { members: { some: { UserId: user.id } } }],
+      OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
     },
     orderBy: { createdAt: "asc" },
   });
@@ -79,8 +81,10 @@ export async function createWorkspace(name: string) {
       ownerId: user.id,
       members: {
         create: {
-          UserId: user.id,
           role: MEMBER_ROLE.ADMIN,
+          user: {
+            connect: { id: user.id },
+          },
         },
       },
     },
@@ -99,7 +103,7 @@ export const getWorkspaceById = async (id: string) => {
   const workspace = await db.workspace.findFirst({
     where: {
       id: id,
-      OR: [{ ownerId: user.id }, { members: { some: { UserId: user.id } } }],
+      OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
     },
     include: {
       members: true,

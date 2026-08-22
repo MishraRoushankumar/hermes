@@ -84,14 +84,17 @@ model Verification {
 //------------------------------------------
 
 model Workspace {
-  id          String            @id @default(cuid())
-  name        String            @unique
+  id          String  @id @default(cuid())
+  name        String  @unique
   description String?
   ownerId     String
-  owner       User              @relation("UserWorkspaces", fields: [ownerId], references: [id])
+  owner       User    @relation("UserWorkspaces", fields: [ownerId], references: [id])
+
   members     WorkspaceMember[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @default(now()) @updatedAt
+  collections Collection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([name, ownerId])
 }
@@ -106,14 +109,30 @@ model WorkspaceMember {
   id   String      @id @default(cuid())
   role MEMBER_ROLE @default(ADMIN)
 
-  UserId      String
+  userId      String
   workspaceId String
 
-  user      User      @relation(fields: [UserId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   workspace Workspace @relation(fields: [workspaceId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  @@unique([UserId, workspaceId])
+  @@unique([userId, workspaceId])
+}
+
+//------------------------------------------
+// COLLECTIONS AND REQUESTS
+//------------------------------------------
+
+model Collection {
+  id   String @id @default(cuid())
+  name String
+
+  workspaceId String
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
