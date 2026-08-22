@@ -1,6 +1,5 @@
 "use client";
 
-import { cloneElement, isValidElement, forwardRef } from "react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -17,16 +16,6 @@ export interface HintProps {
   alignOffset?: number;
 }
 
-const HintTrigger = forwardRef<HTMLElement, React.ComponentProps<"div">>((props, ref) => {
-  const { children, ...rest } = props;
-  if (!isValidElement(children)) return null;
-  return cloneElement(children, {
-    ...rest,
-    ref,
-  } as Record<string, unknown>);
-});
-HintTrigger.displayName = "HintTrigger";
-
 export const Hint = ({
   label,
   children,
@@ -38,9 +27,7 @@ export const Hint = ({
   return (
     <TooltipProvider delay={100}>
       <Tooltip>
-        <TooltipTrigger asChild>
-  <HintTrigger>{children}</HintTrigger>
-</TooltipTrigger>
+        <TooltipTrigger render={children} />
 
         <TooltipContent
           side={side}

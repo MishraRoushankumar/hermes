@@ -36,12 +36,17 @@ const EditCollectionModal = ({
     }
   };
 
+  const handleClose = () => {
+    setName(initialName);
+    setIsModalOpen(false);
+  };
+
   return (
     <Modal
       title="Edit Collection"
       description="Rename your collection"
       isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
+      onClose={handleClose}
       onSubmit={handleSubmit}
       submitText={isPending ? "Saving..." : "Save Changes"}
       submitVariant="default"

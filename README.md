@@ -12,11 +12,17 @@ for future releases.
 
 ---
 
-## Project Status
+### Project Status
 
 🚧 **Early Development**
 
 Hermes is actively under development.
+
+The current release, `v0.2.0`, provides the authentication, application shell,
+workspace, and collection foundations required for the API client experience.
+
+The next major milestone will introduce API request management and HTTP
+request execution.
 
 ### Current Capabilities
 
@@ -29,10 +35,14 @@ Hermes is actively under development.
 - Database-backed authentication
 - Authentication client hooks
 - Authentication UI
+- Authenticated application header
+- Workspace creation and management
+- Active workspace context
+- Collection creation and management
+- Workspace-scoped collections
 - Docker-based local PostgreSQL setup
 - Automated CI checks
 - CodeQL security analysis
-- GitHub issue and pull request templates
 
 ### Planned Capabilities
 
@@ -42,12 +52,12 @@ Hermes is actively under development.
 - Query parameters
 - Request body editor
 - Response viewer
-- Request collections
 - Request history
 - Environment variables
 - Saved requests
 - API documentation
-- Workspace support
+- Workspace collaboration
+- Collection sharing
 
 > Features listed under the planned capabilities are not considered
 > implemented until they are released.
@@ -56,38 +66,75 @@ Hermes is actively under development.
 
 ## Architecture
 
-The current Hermes architecture consists of a Next.js application layer,
-authentication services, Prisma, and PostgreSQL.
+Hermes is structured around an authenticated application shell with workspaces
+and collections providing the organizational foundation for future API request
+management.
 
 ```mermaid
 flowchart TD
-    User["User / Browser"]
+    User["Authenticated User"]
 
     subgraph Hermes["Hermes Web Application"]
+        Header["Application Header"]
         UI["Next.js UI"]
-        AuthClient["Better Auth Client"]
-        AuthServer["Better Auth Server"]
-        Modules["Application Modules"]
+        Auth["Better Auth"]
+        Workspace["Workspace"]
+        Collection["Collection"]
         Prisma["Prisma ORM"]
     end
 
-    subgraph OAuth["OAuth Providers"]
-        GitHub["GitHub"]
-        Google["Google"]
-    end
-
+    OAuth["GitHub / Google OAuth"]
     DB[("PostgreSQL")]
 
-    User --> UI
-    UI --> AuthClient
-    AuthClient --> AuthServer
-    AuthServer --> GitHub
-    AuthServer --> Google
-    AuthServer --> Prisma
-    Modules --> AuthServer
-    Modules --> Prisma
+    User --> Header
+    Header --> UI
+    UI --> Auth
+    Auth --> OAuth
+    Auth --> Prisma
+
+    User --> Workspace
+    Workspace --> Collection
+
+    UI --> Workspace
+    UI --> Collection
+
+    Workspace --> Prisma
+    Collection --> Prisma
+
     Prisma --> DB
+
+    Collection -.-> Requests["API Requests<br/>(Future)"]
 ```
+
+---
+
+## Workspace & Collection Model
+
+Hermes organizes API development resources through workspaces and collections.
+
+```mermaid
+flowchart TD
+    User["Authenticated User"]
+    Workspace["Workspace"]
+    Collection["Collection"]
+    Requests["API Requests"]
+
+    User --> Workspace
+    Workspace --> Collection
+    Collection --> Requests
+
+    Requests:::future
+
+    classDef future stroke-dasharray: 5 5
+```
+
+A workspace represents the primary organizational context for a user's API
+development work.
+
+Collections belong to a workspace and provide a structured way to organize
+API requests.
+
+API request management will be introduced in a future release.
 
 ---
 
@@ -124,14 +171,19 @@ sequenceDiagram
 
 | Category          | Technology                |
 | ----------------- | ------------------------- |
-| Framework         | Next.js                   |
+| Framework         | Next.js 16                |
 | Language          | TypeScript                |
-| UI                | React                     |
-| Styling           | Tailwind CSS              |
+| UI                | React 19                  |
+| Styling           | Tailwind CSS 4            |
+| UI Components     | Base UI / shadcn          |
 | Authentication    | Better Auth               |
 | Database          | PostgreSQL                |
-| ORM               | Prisma                    |
-| Database Adapter  | Prisma PostgreSQL adapter |
+| ORM               | Prisma 7                  |
+| Database Adapter  | Prisma PostgreSQL Adapter |
+| Server State      | TanStack React Query      |
+| Client State      | Zustand                   |
+| Theme Management  | next-themes               |
+| Notifications     | Sonner                    |
 | Validation        | Zod                       |
 | Local Database    | Docker Compose            |
 | CI                | GitHub Actions            |
@@ -306,13 +358,13 @@ http://localhost:3000
 
 ## Available Scripts
 
-| Command            | Purpose                      |
-| ------------------ | ---------------------------- |
-| `npm run dev`      | Start the development server |
-| `npm run build`    | Create a production build    |
-| `npm run start`    | Start the production server  |
-| `npm run lint`     | Run ESLint                   |
-| `npx tsc --noEmit` | Run TypeScript type checking |
+| Command             | Purpose                      |
+| ------------------- | ---------------------------- |
+| `npm run dev`       | Start the development server |
+| `npm run build`     | Create a production build    |
+| `npm run start`     | Start the production server  |
+| `npm run lint`      | Run ESLint                   |
+| `npm run typecheck` | Run TypeScript type checking |
 
 ---
 
@@ -436,28 +488,45 @@ development environment.
 flowchart LR
     Foundation["Foundation"]
     Auth["Authentication"]
+    Header["Application Shell"]
+    Workspace["Workspaces"]
+    Collections["Collections"]
     Requests["Request Builder"]
     Response["Response Viewer"]
-    Collections["Collections"]
     History["Request History"]
     Environments["Environments"]
     Collaboration["Collaboration"]
 
     Foundation --> Auth
-    Auth --> Requests
+    Auth --> Header
+    Header --> Workspace
+    Workspace --> Collections
+    Collections --> Requests
     Requests --> Response
-    Response --> Collections
-    Collections --> History
+    Response --> History
     History --> Environments
     Environments --> Collaboration
 ```
 
-### Current Milestone
+### Current Release
 
-**Foundation + Authentication**
+**v0.2.0 — Workspace & Collection Foundation**
 
-Future milestones will be added as the corresponding functionality is
-implemented.
+Implemented:
+
+- Authentication
+- Application header
+- Workspaces
+- Active workspace context
+- Collections
+- Workspace-scoped collection management
+
+### Next Focus
+
+**API Request Management**
+
+The next milestone will focus on creating, configuring, and executing API
+requests within collections.
 
 ---
 

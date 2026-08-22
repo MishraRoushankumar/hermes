@@ -13,9 +13,10 @@ import {
 
 const SearchBar = () => {
   const [open, setOpen] = useState(false);
-  const isMac =
-    typeof navigator !== "undefined" &&
-    navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  const [isMac] = useState(() => {
+    if (typeof navigator === "undefined") return false;
+    return navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  });
 
   // Handle keyboard shortcut
   useEffect(() => {
@@ -66,27 +67,31 @@ const SearchBar = () => {
               <CommandGroup>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Pre-request Script</span>
+                  <span>Pre-request Script (unavailable)</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Tests</span>
+                  <span>Tests (unavailable)</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Variables</span>
+                  <span>Variables (unavailable)</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Documentation</span>
+                  <span>Documentation (unavailable)</span>
                 </CommandItem>
               </CommandGroup>
             </CommandList>
