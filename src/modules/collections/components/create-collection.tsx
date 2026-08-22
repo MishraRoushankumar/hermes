@@ -31,12 +31,18 @@ const CreateCollection = ({
       console.error("Failed to create collection:", error);
     }
   };
+
+  const handleClose = () => {
+    setName("");
+    setIsModalOpen(false);
+  };
+
   return (
-<Modal
-        title="Add New Collection"
-        description="Create a new collection to organize your requests"
-        isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
+    <Modal
+      title="Add New Collection"
+      description="Create a new collection to organize your requests"
+      isOpen={isModalOpen}
+      onClose={handleClose}
       onSubmit={handleSubmit}
       submitText={isPending ? "Creating..." : "Create Collection"}
       submitVariant="default"

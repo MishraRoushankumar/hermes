@@ -33,7 +33,7 @@ const CreateWorkspace = ({
   return (
     <Modal
       title="Add New Workspace"
-      description="Create a new workspace to organize you projects"
+      description="Create a new workspace to organize your projects"
       isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}
       onSubmit={handleSubmit}

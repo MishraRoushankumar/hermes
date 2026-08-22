@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEditCollection } from "../hooks/collection";
 import { toast } from "sonner";
 import Modal from "@/components/ui/modal";
@@ -23,6 +23,12 @@ const EditCollectionModal = ({
   const [name, setName] = useState(initialName);
   const { mutateAsync, isPending } = useEditCollection(collectionId, name, workspaceId);
 
+  useEffect(() => {
+    if (isModalOpen) {
+      setName(initialName);
+    }
+  }, [isModalOpen, initialName]);
+
   const handleSubmit = async () => {
     if (isPending) return;
     if (!name.trim()) return;
@@ -36,12 +42,17 @@ const EditCollectionModal = ({
     }
   };
 
+  const handleClose = () => {
+    setName(initialName);
+    setIsModalOpen(false);
+  };
+
   return (
     <Modal
       title="Edit Collection"
       description="Rename your collection"
       isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
+      onClose={handleClose}
       onSubmit={handleSubmit}
       submitText={isPending ? "Saving..." : "Save Changes"}
       submitVariant="default"

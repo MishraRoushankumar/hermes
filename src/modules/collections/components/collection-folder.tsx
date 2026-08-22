@@ -5,7 +5,6 @@ import {
   ChevronRight,
   Edit,
   EllipsisVertical,
-  FilePlus,
   Folder,
   Trash,
 } from "lucide-react";
@@ -67,8 +66,6 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
             </CollapsibleTrigger>
 
             <div className="flex flex-row justify-center items-center space-x-2">
-              <FilePlus className="h-4 w-4 text-zinc-400 hover:text-indigo-400" />
-
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
@@ -78,22 +75,6 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
                   }
                 />
                 <DropdownMenuContent className="w-48">
-                  <DropdownMenuItem>
-                    <div className="flex flex-row justify-between items-center w-full">
-                      <div className="font-semibold flex justify-center items-center">
-                        <FilePlus className="text-green-400 mr-2 w-4 h-4" />
-                        Add Request
-                        <div className="p-1 items-center justify-end">
-                          <kbd className="px-1 py-0.5 text-xs bg-zinc-700 rounded">
-                            {modifierKey}
-                          </kbd>
-                          <kbd className="px-1 py-0.5 text-xs bg-zinc-700 rounded">
-                            R
-                          </kbd>
-                        </div>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
                     <div className="flex flex-row justify-between items-center w-full">
                       <div className="font-semibold flex justify-center items-center">

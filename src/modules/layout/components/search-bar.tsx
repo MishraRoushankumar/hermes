@@ -13,9 +13,7 @@ import {
 
 const SearchBar = () => {
   const [open, setOpen] = useState(false);
-  const isMac =
-    typeof navigator !== "undefined" &&
-    navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  const [isMac, setIsMac] = useState(false);
 
   // Handle keyboard shortcut
   useEffect(() => {
@@ -28,6 +26,14 @@ const SearchBar = () => {
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
+  }, []);
+
+  // Determine platform after mount to avoid hydration mismatch
+  useEffect(() => {
+    setIsMac(
+      typeof navigator !== "undefined" &&
+        navigator.platform.toUpperCase().indexOf("MAC") >= 0
+    );
   }, []);
 
   const modifierKey = isMac ? "⌘" : "Ctrl";
@@ -66,27 +72,31 @@ const SearchBar = () => {
               <CommandGroup>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Pre-request Script</span>
+                  <span>Pre-request Script (unavailable)</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Tests</span>
+                  <span>Tests (unavailable)</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Variables</span>
+                  <span>Variables (unavailable)</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => setOpen(false)}
-                  className="text-gray-300 hover:bg-zinc-800"
+                  className="text-gray-300 hover:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  disabled
                 >
-                  <span>Documentation</span>
+                  <span>Documentation (unavailable)</span>
                 </CommandItem>
               </CommandGroup>
             </CommandList>

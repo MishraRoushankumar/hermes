@@ -15,7 +15,16 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const workspace = await initializeWorkspace();
 
   if (!workspace?.success) {
-    redirect("/sign-in");
+    return (
+      <main className="max-h-[calc(100vh-4rem)] h-[calc(100vh-4rem)] flex flex-1 overflow-hidden">
+        <div className="flex h-full w-full items-center justify-center bg-zinc-950 text-zinc-100">
+          <div className="text-center p-8">
+            <h1 className="text-xl font-semibold mb-2">Failed to initialize workspace</h1>
+            <p className="text-zinc-400">{workspace?.error || "Unknown error"}</p>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (

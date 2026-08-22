@@ -75,9 +75,12 @@ export async function createWorkspace(name: string) {
 
   if (!user) throw new Error("Unauthorized");
 
+  const trimmedName = name.trim();
+  if (!trimmedName) throw new Error("Workspace name cannot be empty");
+
   const workspace = await db.workspace.create({
     data: {
-      name: name,
+      name: trimmedName,
       ownerId: user.id,
       members: {
         create: {

@@ -26,9 +26,6 @@ CREATE TABLE "WorkspaceMember" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Workspace_name_key" ON "Workspace"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "WorkspaceMember_UserId_workspaceId_key" ON "WorkspaceMember"("UserId", "workspaceId");
 
 -- AddForeignKey
