@@ -1,0 +1,117 @@
+"use server";
+
+import db from "@/lib/db";
+import { currentUser } from "@/modules/authentication/actions";
+import { MEMBER_ROLE } from "../../../../generated/prisma/enums";
+
+export const initializeWorkspace = async () => {
+  const user = await currentUser();
+
+  if (!user) {
+    return {
+      success: false,
+      error: "User not found",
+    };
+  }
+
+  try {
+    const workspace = await db.workspace.upsert({
+      where: {
+        name_ownerId: {
+          ownerId: user.id,
+          name: "Personal Workspace",
+        },
+      },
+      update: {},
+      create: {
+        name: "Personal Workspace",
+        description: "Default workspace for personal use",
+        ownerId: user.id,
+        members: {
+          create: {
+            role: MEMBER_ROLE.ADMIN,
+            user: {
+              connect: { id: user.id },
+            },
+          },
+        },
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    return {
+      success: true,
+      workspace,
+    };
+  } catch (error) {
+    console.error("Error initializing workspace", error);
+
+    return {
+      success: false,
+      error: "Failed to initialize workspace",
+    };
+  }
+};
+
+export async function getWorkspaces() {
+  const user = await currentUser();
+
+  if (!user) throw new Error("Unauthorized");
+
+  const workspaces = await db.workspace.findMany({
+    where: {
+      OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  return workspaces;
+}
+
+export async function createWorkspace(name: string) {
+  const user = await currentUser();
+
+  if (!user) throw new Error("Unauthorized");
+
+  const trimmedName = name.trim();
+  if (!trimmedName) throw new Error("Workspace name cannot be empty");
+
+  const workspace = await db.workspace.create({
+    data: {
+      name: trimmedName,
+      ownerId: user.id,
+      members: {
+        create: {
+          role: MEMBER_ROLE.ADMIN,
+          user: {
+            connect: { id: user.id },
+          },
+        },
+      },
+    },
+  });
+
+  return workspace;
+}
+
+export const getWorkspaceById = async (id: string) => {
+  const user = await currentUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const workspace = await db.workspace.findFirst({
+    where: {
+      id: id,
+      OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
+    },
+    include: {
+      members: true,
+    },
+  });
+
+  return workspace;
+};
