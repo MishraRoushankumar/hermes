@@ -12,15 +12,30 @@ import { Loader } from "lucide-react";
 
 const Page = () => {
   const { selectedWorkspace } = useWorkspaceStore();
-
   const { data: currentWorkspace, isPending } = useGetWorkspace(
     selectedWorkspace?.id,
   );
 
-  if (isPending || !selectedWorkspace || !currentWorkspace) {
+  if (!selectedWorkspace) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-zinc-400">No workspace selected</p>
+      </div>
+    );
+  }
+
+  if (isPending) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
         <Loader className="animate-spin h-6 w-6 text-indigo-500" />
+      </div>
+    );
+  }
+
+  if (!currentWorkspace) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-zinc-400">Workspace not found</p>
       </div>
     );
   }

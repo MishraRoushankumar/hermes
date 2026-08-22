@@ -6,9 +6,11 @@ import {
   getCollections,
 } from "../actions";
 
+const collectionQueryKey = (workspaceId: string) => ["collections", workspaceId];
+
 export function useCollections(workspaceId: string) {
   return useQuery({
-    queryKey: ["collection", workspaceId],
+    queryKey: collectionQueryKey(workspaceId),
     queryFn: async () => getCollections(workspaceId),
   });
 }
@@ -21,13 +23,13 @@ export function useCreateCollection(workspaceId: string) {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["collections", workspaceId],
+        queryKey: collectionQueryKey(workspaceId),
       });
     },
   });
 }
 
-export function useDeleteCollection(collectionId: string) {
+export function useDeleteCollection(collectionId: string, workspaceId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -35,13 +37,13 @@ export function useDeleteCollection(collectionId: string) {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["collections"],
+        queryKey: collectionQueryKey(workspaceId),
       });
     },
   });
 }
 
-export function useEditCollection(collectionId: string, name: string) {
+export function useEditCollection(collectionId: string, name: string, workspaceId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -49,7 +51,7 @@ export function useEditCollection(collectionId: string, name: string) {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["collections", collectionId],
+        queryKey: collectionQueryKey(workspaceId),
       });
     },
   });

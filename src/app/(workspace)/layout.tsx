@@ -6,13 +6,18 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  const workspace = await initializeWorkspace();
-
   const user = await currentUser();
 
   if (!user) {
     redirect("/sign-in");
   }
+
+  const workspace = await initializeWorkspace();
+
+  if (!workspace?.success) {
+    redirect("/sign-in");
+  }
+
   return (
     <>
       <Header user={user} />

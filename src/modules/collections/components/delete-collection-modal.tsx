@@ -7,16 +7,19 @@ type DeleteCollectionModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
   collectionId: string;
+  workspaceId: string;
 };
 
 const DeleteCollectionModal = ({
   isModalOpen,
   setIsModalOpen,
   collectionId,
+  workspaceId,
 }: DeleteCollectionModalProps) => {
-  const { mutateAsync, isPending } = useDeleteCollection(collectionId);
+  const { mutateAsync, isPending } = useDeleteCollection(collectionId, workspaceId);
 
   const handleDelete = async () => {
+    if (isPending) return;
     try {
       await mutateAsync();
       toast.success("Collection deleted successfully");
@@ -36,6 +39,7 @@ const DeleteCollectionModal = ({
       onSubmit={handleDelete}
       submitText={isPending ? "Deleting..." : "Delete"}
       submitVariant="destructive"
+      submitDisabled={isPending}
     >
       <p className="text-sm text-zinc-500">
         Once deleted, all requests and data in this collection will be

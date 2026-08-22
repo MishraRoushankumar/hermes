@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   ChevronDown,
@@ -15,7 +15,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Kbd } from "@/components/ui/kbd";
 import EditCollectionModal from "./edit-collection-modal";
 import DeleteCollectionModal from "./delete-collection-modal";
 
@@ -33,7 +32,6 @@ type CollectionFolderProps = {
 
 const CollectionFolder = ({ collection }: CollectionFolderProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isAddRequest, setIsAddRequest] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -80,7 +78,7 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
                   }
                 />
                 <DropdownMenuContent className="w-48">
-                  <DropdownMenuItem onClick={() => setIsAddRequest(true)}>
+                  <DropdownMenuItem>
                     <div className="flex flex-row justify-between items-center w-full">
                       <div className="font-semibold flex justify-center items-center">
                         <FilePlus className="text-green-400 mr-2 w-4 h-4" />
@@ -140,12 +138,14 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
         setIsModalOpen={setIsEditOpen}
         collectionId={collection.id}
         initialName={collection.name}
+        workspaceId={collection.workspaceId}
       />
 
       <DeleteCollectionModal
         isModalOpen={isDeleteOpen}
         setIsModalOpen={setIsDeleteOpen}
         collectionId={collection.id}
+        workspaceId={collection.workspaceId}
       />
     </>
   );

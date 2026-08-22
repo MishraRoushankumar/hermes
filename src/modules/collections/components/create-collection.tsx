@@ -32,10 +32,10 @@ const CreateCollection = ({
     }
   };
   return (
-    <Modal
-      title="Add New Collection"
-      description="Create a new collection to organize you requests"
-      isOpen={isModalOpen}
+<Modal
+        title="Add New Collection"
+        description="Create a new collection to organize your requests"
+        isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}
       onSubmit={handleSubmit}
       submitText={isPending ? "Creating..." : "Create Collection"}

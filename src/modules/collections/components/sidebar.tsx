@@ -9,10 +9,10 @@ import {
   Plus,
   Search,
   Loader,
+  RotateCcw,
 } from "lucide-react";
 import { useState } from "react";
 import { useCollections } from "@/modules/collections/hooks/collection";
-import { Input } from "@/components/ui/input";
 import CreateCollection from "@/modules/collections/components/create-collection";
 import EmptyCollections from "@/modules/collections/components/empty-collection";
 import CollectionFolder from "./collection-folder";
@@ -48,12 +48,26 @@ const TabbedSidebar = ({ currentWorkspace }: TabbedSidebarProps) => {
     data: collections,
     isLoading,
     isError,
+    refetch,
   } = useCollections(currentWorkspace?.id);
 
   if (isLoading)
     return (
       <div className="flex-1 flex items-center justify-center">
         <Loader className="w-6 h-6 text-indigo-400 animate-spin" />
+      </div>
+    );
+
+  if (isError)
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8">
+        <div className="text-center">
+          <p className="text-zinc-400 mb-4">Failed to load collections</p>
+          <Button variant="outline" onClick={() => refetch()} className="gap-2">
+            <RotateCcw className="w-4 h-4" />
+            <span>Retry</span>
+          </Button>
+        </div>
       </div>
     );
 
@@ -128,7 +142,7 @@ const TabbedSidebar = ({ currentWorkspace }: TabbedSidebarProps) => {
       {/* Sidebar */}
       <div className="w-12 bg-zinc-900 border-r border-zinc-800 flex flex-col items-center py-4 space-y-4">
         {sidebarItems.map((item, index) => (
-          <div
+          <button
             key={index}
             onClick={() => setActiveTab(item.label)}
             className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
@@ -136,9 +150,11 @@ const TabbedSidebar = ({ currentWorkspace }: TabbedSidebarProps) => {
                 ? "bg-indigo-600 text-white"
                 : "text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800"
             }`}
+            aria-label={item.label}
+            aria-pressed={activeTab === item.label}
           >
             <item.icon className="w-4 h-4" />
-          </div>
+          </button>
         ))}
       </div>
 

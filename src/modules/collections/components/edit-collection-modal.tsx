@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useEditCollection } from "../hooks/collection";
 import { toast } from "sonner";
 import Modal from "@/components/ui/modal";
-import { Input } from "@/components/ui/input";
 
 type EditCollectionModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
   collectionId: string;
   initialName: string;
+  workspaceId: string;
 };
 
 const EditCollectionModal = ({
@@ -18,11 +18,13 @@ const EditCollectionModal = ({
   setIsModalOpen,
   collectionId,
   initialName,
+  workspaceId,
 }: EditCollectionModalProps) => {
   const [name, setName] = useState(initialName);
-  const { mutateAsync, isPending } = useEditCollection(collectionId, name);
+  const { mutateAsync, isPending } = useEditCollection(collectionId, name, workspaceId);
 
   const handleSubmit = async () => {
+    if (isPending) return;
     if (!name.trim()) return;
     try {
       await mutateAsync();
@@ -43,6 +45,7 @@ const EditCollectionModal = ({
       onSubmit={handleSubmit}
       submitText={isPending ? "Saving..." : "Save Changes"}
       submitVariant="default"
+      submitDisabled={isPending}
     >
       <div className="space-y-4">
         <input
