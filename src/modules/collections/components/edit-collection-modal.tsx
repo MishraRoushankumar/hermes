@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useEditCollection } from "../hooks/collection";
 import { toast } from "sonner";
 import Modal from "@/components/ui/modal";
@@ -22,12 +22,6 @@ const EditCollectionModal = ({
 }: EditCollectionModalProps) => {
   const [name, setName] = useState(initialName);
   const { mutateAsync, isPending } = useEditCollection(collectionId, name, workspaceId);
-
-  useEffect(() => {
-    if (isModalOpen) {
-      setName(initialName);
-    }
-  }, [isModalOpen, initialName]);
 
   const handleSubmit = async () => {
     if (isPending) return;

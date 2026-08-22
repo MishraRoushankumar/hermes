@@ -13,7 +13,10 @@ import {
 
 const SearchBar = () => {
   const [open, setOpen] = useState(false);
-  const [isMac, setIsMac] = useState(false);
+  const [isMac] = useState(() => {
+    if (typeof navigator === "undefined") return false;
+    return navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  });
 
   // Handle keyboard shortcut
   useEffect(() => {
@@ -26,14 +29,6 @@ const SearchBar = () => {
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
-
-  // Determine platform after mount to avoid hydration mismatch
-  useEffect(() => {
-    setIsMac(
-      typeof navigator !== "undefined" &&
-        navigator.platform.toUpperCase().indexOf("MAC") >= 0
-    );
   }, []);
 
   const modifierKey = isMac ? "⌘" : "Ctrl";
