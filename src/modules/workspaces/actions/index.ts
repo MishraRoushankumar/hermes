@@ -2,7 +2,7 @@
 
 import db from "@/lib/db";
 import { currentUser } from "@/modules/authentication/actions";
-import { MEMBER_ROLE } from "../../../../generated/prisma/enums";
+import { MEMBER_ROLE } from "../../../../generated/prisma/client";
 
 export const initializeWorkspace = async () => {
   const user = await currentUser();
