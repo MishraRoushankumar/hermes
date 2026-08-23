@@ -18,6 +18,9 @@ type Props = {
     name: string;
     url: string;
     method: REST_METHOD;
+    body?: string;
+    headers?: string;
+    parameters?: string;
   };
   initialName?: string;
   collectionId?: string;
@@ -89,6 +92,9 @@ const SaveRequestToCollectionModal = ({
         url: requestData.url,
         method: requestData.method,
         name: requestName.trim(),
+        body: requestData.body,
+        headers: requestData.headers,
+        parameters: requestData.parameters,
       });
 
       toast.success(
@@ -109,6 +115,7 @@ const SaveRequestToCollectionModal = ({
       onClose={() => setIsModalOpen(false)}
       onSubmit={handleSubmit}
       submitText={isPending ? "Saving..." : "Save"}
+      submitDisabled={isPending}
       submitVariant="default"
     >
       <div className="space-y-4 ">

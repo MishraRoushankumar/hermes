@@ -13,11 +13,10 @@ export function useAddRequestToCollection(collectionId: string) {
     mutationFn: async (value: Request) =>
       addRequestToCollection(collectionId, value),
 
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["requests", collectionId],
       });
-      console.log(data);
     },
   });
 }
@@ -28,11 +27,10 @@ export function useSaveRequest(id: string) {
   return useMutation({
     mutationFn: async (value: Request) => saveRequest(id, value),
 
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["requests"],
       });
-      console.log(data);
     },
   });
 }
