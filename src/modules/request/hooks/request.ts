@@ -21,11 +21,17 @@ export function useAddRequestToCollection(collectionId: string) {
   });
 }
 
-export function useSaveRequest(id: string) {
+export function useSaveRequest(requestId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (value: Request) => saveRequest(id, value),
+    mutationFn: async (value: Request) => {
+      if (!requestId) {
+        throw new Error("No active request selected");
+      }
+
+      return saveRequest(requestId, value);
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({
