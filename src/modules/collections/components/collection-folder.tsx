@@ -25,6 +25,7 @@ import DeleteCollectionModal from "./delete-collection-modal";
 import SaveRequestToCollectionModal from "./add-request-modal";
 import { useGetAllRequestFromCollection } from "@/modules/request/hooks/request";
 import { REST_METHOD } from "../../../../generated/prisma/enums";
+import { useRequestPlaygroundStore } from "@/modules/request/store/useRequestStore";
 
 type DateValue = string | Date;
 
@@ -49,6 +50,7 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
     isPending,
     isError,
   } = useGetAllRequestFromCollection(collection.id);
+  const { openRequestTab } = useRequestPlaygroundStore();
 
   const requestColorMap: Record<REST_METHOD, string> = {
     [REST_METHOD.GET]: "text-green-500",
@@ -149,7 +151,7 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
                 {requestData.map((request) => (
                   <div
                     key={request.id}
-                    // onClick={() => openRequestTab(request)}
+                    onClick={() => openRequestTab(request)}
                     className="flex items-center justify-between py-2 px-3 hover:bg-zinc-900/50 rounded-md cursor-pointer group transition-colors"
                   >
                     <div className="flex items-center space-x-3 flex-1">
@@ -177,11 +179,18 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
                       </div>
                     </div>
 
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <DropdownMenu>
                         <DropdownMenuTrigger
+                          onClick={(e) => e.stopPropagation()}
                           render={
-                            <button className="p-1 hover:bg-zinc-800 rounded">
+                            <button
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-1 hover:bg-zinc-800 rounded"
+                            >
                               <EllipsisVertical className="w-3 h-3 text-zinc-400" />
                             </button>
                           }
