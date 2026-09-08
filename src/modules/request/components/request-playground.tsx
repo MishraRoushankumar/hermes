@@ -13,12 +13,17 @@ import { useSaveRequest } from "../hooks/request";
 import { REST_METHOD } from "../../../../generated/prisma/enums";
 
 export default function PlaygroundPage() {
-  const { tabs, activeTabId, addTab } = useRequestPlaygroundStore();
+  const { tabs, activeTabId, addTab, markUnsaved } =
+    useRequestPlaygroundStore();
 
   const activeTab = tabs.find((t) => t.id === activeTabId);
 
   const { mutateAsync, isPending } = useSaveRequest(activeTab?.requestId);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [isMac] = useState(() => {
+    if (typeof navigator === "undefined") return false;
+    return navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  });
 
   const getCurrentRequestData = () => {
     if (!activeTab) {
@@ -48,15 +53,34 @@ export default function PlaygroundPage() {
       }
 
       if (activeTab.collectionId) {
+        if (isPending) return;
+        const tabSnapshot = { ...activeTab };
         try {
           await mutateAsync({
-            url: activeTab.url || "https://echo.hoppscotch.io",
-            method: activeTab.method as REST_METHOD,
-            name: activeTab.title || "Untitled Request",
-            body: activeTab.body,
-            headers: activeTab.headers,
-            parameters: activeTab.parameters,
+            url: tabSnapshot.url || "https://echo.hoppscotch.io",
+            method: tabSnapshot.method as REST_METHOD,
+            name: tabSnapshot.title || "Untitled Request",
+            body: tabSnapshot.body,
+            headers: tabSnapshot.headers,
+            parameters: tabSnapshot.parameters,
           });
+
+          // Clear unsaved state only if the tab has not received newer edits during save
+          const currentTab = useRequestPlaygroundStore
+            .getState()
+            .tabs.find((t) => t.id === tabSnapshot.id);
+          if (
+            currentTab &&
+            currentTab.url === tabSnapshot.url &&
+            currentTab.method === tabSnapshot.method &&
+            currentTab.title === tabSnapshot.title &&
+            currentTab.body === tabSnapshot.body &&
+            currentTab.headers === tabSnapshot.headers &&
+            currentTab.parameters === tabSnapshot.parameters
+          ) {
+            markUnsaved(tabSnapshot.id, false);
+          }
+
           toast.success("Request updated");
         } catch (err) {
           console.error("Failed to update request:", err);
@@ -67,7 +91,7 @@ export default function PlaygroundPage() {
       }
     },
     { preventDefault: true, enableOnFormTags: true },
-    [activeTab],
+    [activeTab, isPending],
   );
 
   useHotkeys(
@@ -95,13 +119,13 @@ export default function PlaygroundPage() {
         <div className="bg-zinc-900 p-4 rounded-lg space-y-2">
           <div className="flex justify-between items-center gap-8">
             <kbd className="px-2 py-1 bg-zinc-800 text-indigo-400 text-sm rounded border">
-              Ctrl+Shift+N
+              {isMac ? "⌘+Shift+N" : "Ctrl+G"}
             </kbd>
             <span className="text-zinc-400 font-semibold">New Request</span>
           </div>
           <div className="flex justify-between items-center gap-8">
             <kbd className="px-2 py-1 bg-zinc-800 text-indigo-400 text-sm rounded border">
-              Ctrl+S
+              {isMac ? "⌘+S" : "Ctrl+S"}
             </kbd>
             <span className="text-zinc-400 font-semibold">Save Request</span>
           </div>

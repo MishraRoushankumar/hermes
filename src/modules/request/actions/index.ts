@@ -42,6 +42,22 @@ const verifyWorkspaceMembership = async (
   return membership;
 };
 
+const parseJsonField = (value?: string) => {
+  if (value == null) return undefined;
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (typeof parsed === "object" && parsed !== null) {
+      return parsed;
+    }
+    return value;
+  } catch {
+    return value;
+  }
+};
+
 export const addRequestToCollection = async (
   collectionId: string,
   value: Request,
@@ -65,9 +81,9 @@ export const addRequestToCollection = async (
       name: value.name,
       method: value.method,
       url: value.url,
-      body: value.body,
-      headers: value.headers,
-      parameters: value.parameters,
+      body: parseJsonField(value.body),
+      headers: parseJsonField(value.headers),
+      parameters: parseJsonField(value.parameters),
     },
   });
 
@@ -96,9 +112,9 @@ export const saveRequest = async (id: string, value: Request) => {
       name: value.name,
       method: value.method,
       url: value.url,
-      body: value.body,
-      headers: value.headers,
-      parameters: value.parameters,
+      body: parseJsonField(value.body),
+      headers: parseJsonField(value.headers),
+      parameters: parseJsonField(value.parameters),
     },
   });
 

@@ -22,11 +22,14 @@ const RequestBar = ({ tab, updateTab }: RequestBarProps) => {
     GET: "text-green-500",
     POST: "text-blue-500",
     PUT: "text-yellow-500",
+    PATCH: "text-orange-500",
     DELETE: "text-red-500",
   };
 
   const onSendRequest = () => {};
   const isPending = false;
+  // Execution flow is not yet functional
+  const isExecutionSupported = false;
 
   return (
     <div className="flex flex-row items-center justify-between bg-zinc-900 rounded-md px-2 py-2 w-full">
@@ -53,6 +56,9 @@ const RequestBar = ({ tab, updateTab }: RequestBarProps) => {
               <SelectItem value="PUT" className="text-yellow-500">
                 PUT
               </SelectItem>
+              <SelectItem value="PATCH" className="text-orange-500">
+                PATCH
+              </SelectItem>
               <SelectItem value="DELETE" className="text-red-500">
                 DELETE
               </SelectItem>
@@ -70,7 +76,7 @@ const RequestBar = ({ tab, updateTab }: RequestBarProps) => {
       <Button
         type="submit"
         onClick={onSendRequest}
-        disabled={isPending || !tab.url}
+        disabled={!isExecutionSupported || isPending || !tab.url}
         className="ml-2 text-white font-bold bg-indigo-500 hover:bg-indigo-600"
       >
         <Send className="mr-2" />

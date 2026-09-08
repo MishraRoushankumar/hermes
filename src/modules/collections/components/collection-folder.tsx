@@ -179,11 +179,18 @@ const CollectionFolder = ({ collection }: CollectionFolderProps) => {
                       </div>
                     </div>
 
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <DropdownMenu>
                         <DropdownMenuTrigger
+                          onClick={(e) => e.stopPropagation()}
                           render={
-                            <button className="p-1 hover:bg-zinc-800 rounded">
+                            <button
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-1 hover:bg-zinc-800 rounded"
+                            >
                               <EllipsisVertical className="w-3 h-3 text-zinc-400" />
                             </button>
                           }

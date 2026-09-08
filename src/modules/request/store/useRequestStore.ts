@@ -1,5 +1,5 @@
-import { create } from "zustand";
 import { nanoid } from "nanoid";
+import { create } from "zustand";
 // import { ResponseData } from "../components/response-viewer";
 
 interface SavedRequest {
@@ -16,7 +16,12 @@ interface SavedRequest {
 
 const toRequestField = (value: unknown): string | undefined => {
   if (value == null) return undefined;
-  return typeof value === "string" ? value : JSON.stringify(value);
+  if (typeof value === "string") return value;
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
 };
 
 export type RequestTab = {
@@ -50,19 +55,21 @@ type PlaygroundState = {
   // setResponseViewerData: (data: ResponseData) => void;
 };
 
+const initialTabId = nanoid();
+
 export const useRequestPlaygroundStore = create<PlaygroundState>((set) => ({
   responseViewerData: null,
   // setResponseViewerData: (data) => set({ responseViewerData: data }),
   tabs: [
     {
-      id: nanoid(),
+      id: initialTabId,
       title: "Request",
       method: "GET",
       url: "https://echo.hoppscotch.io",
       unsavedChanges: false,
     },
   ],
-  activeTabId: null,
+  activeTabId: initialTabId,
 
   addTab: () =>
     set((state) => {
@@ -86,9 +93,13 @@ export const useRequestPlaygroundStore = create<PlaygroundState>((set) => ({
     set((state) => {
       const newTabs = state.tabs.filter((t) => t.id !== id);
       const newActive =
-        state.activeTabId === id && newTabs.length > 0
-          ? newTabs[0].id
-          : state.activeTabId;
+        state.activeTabId === id
+          ? newTabs.length > 0
+            ? newTabs[0].id
+            : null
+          : newTabs.length === 0
+            ? null
+            : state.activeTabId;
       return { tabs: newTabs, activeTabId: newActive };
     }),
 
@@ -142,17 +153,19 @@ export const useRequestPlaygroundStore = create<PlaygroundState>((set) => ({
         t.id === tabId
           ? {
               ...t,
-              id: savedRequest.id, // ✅ Replace temporary id with saved one
-              title: savedRequest.name,
-              method: savedRequest.method,
-              body: toRequestField(savedRequest.body),
-              headers: toRequestField(savedRequest.headers),
-              parameters: toRequestField(savedRequest.parameters),
-              url: savedRequest.url,
+              requestId: savedRequest.id,
+              collectionId: savedRequest.collectionId ?? t.collectionId,
+              workspaceId: savedRequest.workspaceId ?? t.workspaceId,
+              title: savedRequest.name || t.title,
+              method: savedRequest.method || t.method,
+              body: toRequestField(savedRequest.body) ?? t.body,
+              headers: toRequestField(savedRequest.headers) ?? t.headers,
+              parameters:
+                toRequestField(savedRequest.parameters) ?? t.parameters,
+              url: savedRequest.url ?? t.url,
               unsavedChanges: false,
             }
           : t,
       ),
-      activeTabId: savedRequest.id, // ✅ keep active in sync
     })),
 }));
